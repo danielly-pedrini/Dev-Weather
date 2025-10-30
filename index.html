@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Dev Weather</title>
+    
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Dev Weather</h1>
+            <p>Previsão do Tempo para Programadores 👨‍💻</p>
+        </div>
+
+        <div class="search-container">
+            <div class="search-wrapper">
+                <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input type="text" id="searchInput" class="search-input" placeholder="Digite o nome da cidade...">
+            </div>
+            <button id="searchButton" class="search-button">Buscar</button>
+        </div>
+
+        <div id="errorMessage" class="error-message hidden"></div>
+        
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Carregando dados...</p>
+        </div>
+
+        <div id="weatherContent" class="hidden">
+            <div id="mainCard" class="main-card">
+                <div class="location-header">
+                    <svg width="24" height="24" fill="none" stroke="#60a5fa" viewBox="0 0 24 24">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <h2 id="locationName"></h2>
+                </div>
+                
+                <div class="main-info">
+                    <div>
+                        <div id="conditionText" class="condition-text"></div>
+                        <p id="weatherDesc" class="weather-description"></p>
+                    </div>
+                    <div class="temp-display">
+                        <div id="tempMain" class="temp-main"></div>
+                        <div id="cpuStatus" class="cpu-status"></div>
+                        <div id="feelsLike" class="feels-like"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <svg width="24" height="24" fill="none" stroke="#60a5fa" viewBox="0 0 24 24">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                        </svg>
+                        <h3>Risco de Bugs</h3>
+                    </div>
+                    <div id="bugRisk" class="metric-value"></div>
+                    <div class="metric-detail">Baseado na umidade atual</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <svg width="24" height="24" fill="none" stroke="#c084fc" viewBox="0 0 24 24">
+                            <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+                        </svg>
+                        <h3>Débito Técnico</h3>
+                    </div>
+                    <div id="techDebt" class="metric-value"></div>
+                    <div id="humidity" class="metric-detail"></div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <svg width="24" height="24" fill="none" stroke="#2dd4bf" viewBox="0 0 24 24">
+                            <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path>
+                        </svg>
+                        <h3>Tráfego de Requisições</h3>
+                    </div>
+                    <div id="traffic" class="metric-value"></div>
+                    <div id="windSpeed" class="metric-detail"></div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <svg width="24" height="24" fill="none" stroke="#4ade80" viewBox="0 0 24 24">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        <h3>Qualidade do Código</h3>
+                    </div>
+                    <div id="codeQuality" class="metric-value"></div>
+                    <div id="pressure" class="metric-detail"></div>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-row">
+                    <div class="info-item">
+                        <p>Min/Max</p>
+                        <p id="minMax"></p>
+                    </div>
+                    <div class="info-item">
+                        <p>Visibilidade</p>
+                        <p id="visibility"></p>
+                    </div>
+                    <div class="info-item">
+                        <p>Nascer do Sol</p>
+                        <p id="sunrise"></p>
+                    </div>
+                    <div class="info-item">
+                        <p>Pôr do Sol</p>
+                        <p id="sunset"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
