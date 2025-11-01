@@ -60,6 +60,7 @@ A interface apresenta:
 ```
 dev-weather/
 │
+├── assets           # Imagens do projeto
 ├── index.html       # Estrutura HTML da aplicação
 ├── style.css        # Estilos e design responsivo
 ├── script.js        # Lógica JavaScript e integração com API
