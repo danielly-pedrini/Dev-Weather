@@ -1,4 +1,5 @@
-  const API_KEY = 'd726a1ef21070cf0c1085e83aa0bf9e2';
+
+        const API_KEY = 'd726a1ef21070cf0c1085e83aa0bf9e2';
         let weatherData = null;
 
         function getDevCondition(condition, icon) {
@@ -24,6 +25,18 @@
             }
             
             return { text: '🌤️ Testes Passando', color: '#93c5fd', bg: 'rgba(147, 197, 253, 0.2)' };
+        }
+
+        function getConditionEmoji(icon) {
+            const iconCode = icon?.slice(0, 2);
+            if (iconCode === '01') return '☀️';
+            if (iconCode === '02') return '🌤️';
+            if (iconCode === '03' || iconCode === '04') return '☁️';
+            if (iconCode === '50') return '🌫️';
+            if (iconCode === '09' || iconCode === '10') return '🌧️';
+            if (iconCode === '11') return '⛈️';
+            if (iconCode === '13') return '❄️';
+            return '🌤️';
         }
 
         function getBugRisk(humidity) {
@@ -78,6 +91,67 @@
 
         function hideLoading() {
             document.getElementById('loading').classList.add('hidden');
+        }
+
+        function getDayName(timestamp) {
+            const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            const date = new Date(timestamp * 1000);
+            return days[date.getDay()];
+        }
+
+        function updateForecast(forecastData) {
+            const forecastGrid = document.getElementById('forecastGrid');
+            forecastGrid.innerHTML = '';
+
+            const dailyForecasts = {};
+            forecastData.list.forEach(item => {
+                const date = new Date(item.dt * 1000).toLocaleDateString('pt-BR');
+                if (!dailyForecasts[date]) {
+                    dailyForecasts[date] = [];
+                }
+                dailyForecasts[date].push(item);
+            });
+
+            const dates = Object.keys(dailyForecasts).slice(1, 5);
+
+            dates.forEach(date => {
+                const dayData = dailyForecasts[date];
+                const midday = dayData.find(d => {
+                    const hour = new Date(d.dt * 1000).getHours();
+                    return hour >= 12 && hour <= 15;
+                }) || dayData[0];
+
+                const temps = dayData.map(d => d.main.temp);
+                const minTemp = Math.min(...temps);
+                const maxTemp = Math.max(...temps);
+
+                const bugRisk = getBugRisk(midday.main.humidity);
+                const traffic = getTraffic(midday.wind.speed * 3.6);
+
+                const card = document.createElement('div');
+                card.className = 'forecast-card';
+                card.innerHTML = `
+                    <div class="forecast-day">${getDayName(midday.dt)}</div>
+                    <div class="forecast-condition">${getConditionEmoji(midday.weather[0].icon)}</div>
+                    <div class="forecast-temp">${Math.round(midday.main.temp)}°C</div>
+                    <div class="forecast-minmax">${Math.round(minTemp)}° / ${Math.round(maxTemp)}°</div>
+                    <div class="forecast-metrics">
+                        <div class="forecast-metric">
+                            <span class="forecast-metric-label">Bugs:</span>
+                            <span class="forecast-metric-value" style="color: ${bugRisk.color}">${bugRisk.text}</span>
+                        </div>
+                        <div class="forecast-metric">
+                            <span class="forecast-metric-label">Tráfego:</span>
+                            <span class="forecast-metric-value" style="color: ${traffic.color}">${traffic.text}</span>
+                        </div>
+                        <div class="forecast-metric">
+                            <span class="forecast-metric-label">Umidade:</span>
+                            <span class="forecast-metric-value">${midday.main.humidity}%</span>
+                        </div>
+                    </div>
+                `;
+                forecastGrid.appendChild(card);
+            });
         }
 
         function updateUI(data) {
@@ -149,24 +223,29 @@
             document.getElementById('searchButton').disabled = true;
 
             try {
-                const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&appid=${API_KEY}&units=metric&lang=pt_br`;
-                console.log('Buscando:', url);
+                const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&appid=${API_KEY}&units=metric&lang=pt_br`;
+                const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(cityName)}&appid=${API_KEY}&units=metric&lang=pt_br`;
                 
-                const response = await fetch(url);
+                const [weatherResponse, forecastResponse] = await Promise.all([
+                    fetch(weatherUrl),
+                    fetch(forecastUrl)
+                ]);
                 
-                if (!response.ok) {
-                    if (response.status === 404) {
+                if (!weatherResponse.ok) {
+                    if (weatherResponse.status === 404) {
                         throw new Error('Cidade não encontrada. Verifique o nome e tente novamente.');
-                    } else if (response.status === 401) {
+                    } else if (weatherResponse.status === 401) {
                         throw new Error('Erro de autenticação. Verifique sua API Key.');
                     } else {
-                        throw new Error(`Erro ${response.status}: ${response.statusText}`);
+                        throw new Error(`Erro ${weatherResponse.status}: ${weatherResponse.statusText}`);
                     }
                 }
 
-                const data = await response.json();
-                console.log('Dados recebidos:', data);
-                updateUI(data);
+                const weatherData = await weatherResponse.json();
+                const forecastData = await forecastResponse.json();
+                
+                updateUI(weatherData);
+                updateForecast(forecastData);
             } catch (err) {
                 console.error('Erro:', err);
                 showError(err.message || 'Erro ao buscar dados do clima. Verifique sua conexão.');
