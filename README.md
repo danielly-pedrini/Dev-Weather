@@ -8,7 +8,9 @@ Uma aplicação web que traduz dados meteorológicos em termos de desenvolviment
 
 <img src="./assets/Dev Weather 1.png" alt="imagem 1">
 <br>
-<img src="./assets/Dev Weather 1.png" alt="imagem 2">
+<img src="./assets/Dev Weather 2.png" alt="imagem 2">
+<br>
+<img src="./assets/Dev Weather 3.png" alt="imagem 3">
 
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
